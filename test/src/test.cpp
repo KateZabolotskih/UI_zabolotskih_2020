@@ -3,13 +3,11 @@
 //
 #include "../include/ILogger.h"
 #include "../include/IVector.h"
+#include "../include/test.h"
 
 
 
 int main() {
-    int a;
-    double data[] = {1, 2, 3};
-    ILogger * logger = ILogger::createLogger(&a);
-    IVector * v1 = IVector::createVector(3, data, nullptr);
+    vector_testing_run();
     return 0;
 }
