@@ -1,6 +1,6 @@
 # сообщаем о динамической библиотеке и из каких файлов она будет собрана
 add_library(logger SHARED
-        LoggerImpl.cpp Logger.cpp)
+        ILoggerImpl.cpp ILogger.cpp)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
 

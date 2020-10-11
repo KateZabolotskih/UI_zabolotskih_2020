@@ -1,8 +1,7 @@
 # сообщаем о динамической библиотеке и из каких файлов она будет собрана
 add_library(vector SHARED
-        include/IVector.h
-        Vector.cpp
-        VectorImpl.cpp)
+        IVector.cpp
+        IVectorImpl.cpp)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
 

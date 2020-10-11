@@ -1,8 +1,8 @@
 # сообщаем о динамической библиотеке и из каких файлов она будет собрана
 add_library(set SHARED
         include/ISet.h
-        Set.cpp
-        SetImpl.cpp)
+        ISet.cpp
+        ISetImpl.cpp)
 
 # сообщаем какие includ'ы будут видны извне
 target_include_directories(set PUBLIC include)
