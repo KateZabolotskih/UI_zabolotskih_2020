@@ -1,34 +1,6 @@
 #include <cmath>
 #include "include/IVector.h"
 
-static void log(ILogger * logger, ReturnCode code) {
-    if (!logger){
-        return;
-    }
-    switch (code) {
-        case ReturnCode::RC_WRONG_DIM:
-            logger->log("IVector: dimension mismatch", ReturnCode::RC_WRONG_DIM);
-            break;
-        case ReturnCode::RC_ZERO_DIM:
-            logger->log("IVector: zero dimension vector", ReturnCode::RC_ZERO_DIM);
-        case ReturnCode::RC_NO_MEM:
-            logger->log("IVector: can't allocate memory", ReturnCode::RC_NO_MEM);
-            break;
-        case ReturnCode::RC_NULL_PTR:
-            logger->log("IVector: can't work with nullptr", ReturnCode::RC_NULL_PTR);
-            break;
-        case ReturnCode::RC_INVALID_PARAMS:
-            logger->log("IVector: invalid params", ReturnCode::RC_INVALID_PARAMS);
-            break;
-        case ReturnCode::RC_NAN:
-            logger->log("IVector: value is missing", ReturnCode::RC_NAN);
-            break;
-        case ReturnCode::RC_OUT_OF_BOUNDS:
-            logger->log("IVector: run out the bounds", ReturnCode::RC_OUT_OF_BOUNDS);
-    }
-}
-
-
 namespace {
     class VectorImpl : IVector {
         ILogger * _logger {nullptr};
@@ -66,7 +38,7 @@ size_t VectorImpl::getDim() const {
 
 double VectorImpl::getCoord(size_t index) const {
     if (index >= _dim || index < 0) {
-        log(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
+        _log(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
         return std::nan("1");
     }
     return _data[index];
@@ -74,11 +46,11 @@ double VectorImpl::getCoord(size_t index) const {
 
 ReturnCode VectorImpl::setCoord(size_t index, double value) const {
     if (index >= _dim || index < 0) {
-        log(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
+        _log(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
         return ReturnCode::RC_INVALID_PARAMS;
     }
     if (std::isnan(value) || std::isinf(value)) {
-        log(_logger, ReturnCode::RC_NAN);
+        _log(_logger, ReturnCode::RC_NAN);
         return ReturnCode::RC_NAN;
     }
     _data[index] = value;

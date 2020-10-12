@@ -21,6 +21,21 @@ namespace {
     LoggerImpl * LoggerImpl::_instance = nullptr;
 }
 
+static char const* RC_messages[(size_t)ReturnCode::RC_UNKNOWN + 1] = {
+        "Success! (no errors)",
+        "Not enough memory for allocation",
+        "Can't work with nullptr",
+        "Zero dimension object",
+        "Working with objects of different dimensions",
+        "Working with objects without value",
+        "Run out the bounds",
+        "Unable open file",
+        "Can't find an element",
+        "Invalid parameters passed",
+        "Initialization of parameters is required",
+        "Unknown error"
+};
+
 ILogger * LoggerImpl::getLogger(void *client) {
     if (!client) {
         return nullptr;
@@ -44,7 +59,8 @@ void LoggerImpl::log(const char *message, ReturnCode returnCode) {
     if (!message) {
         fprintf(_log_file, "fun=%s code=%d message=NULL ", __FUNCTION__, returnCode);
     }
-    fprintf(_log_file, "fun=%s code=%d message=%s ", __FUNCTION__, returnCode ,message);
+    fprintf(_log_file, "fun=%s code=%d message=%s ", __FUNCTION__, returnCode ,RC_messages[(size_t)returnCode]);
+
 }
 
 void LoggerImpl::releaseLogger(void *client) {

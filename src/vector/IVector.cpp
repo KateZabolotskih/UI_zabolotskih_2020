@@ -44,28 +44,28 @@ static ReturnCode validateVector(const IVector *vec) {
 
 IVector * IVector::createVector(size_t dim, double *data, ILogger *logger) {
     if (!dim) {
-        log(logger, ReturnCode::RC_ZERO_DIM);
+        _log(logger, ReturnCode::RC_ZERO_DIM);
         return nullptr;
     }
     if (!data) {
-        log(logger, ReturnCode::RC_NULL_PTR);
+        _log(logger, ReturnCode::RC_NULL_PTR);
         return nullptr;
     }
     for (int i = 0; i < dim; ++i) {
         if (std::isinf(data[i]) || std::isnan(data[i])) {
-            log(logger, ReturnCode::RC_NAN);
+            _log(logger, ReturnCode::RC_NAN);
             return nullptr;
         }
     }
     double * copy = new(std::nothrow) double[dim];
     if (!copy) {
-        log(logger, ReturnCode::RC_NO_MEM);
+        _log(logger, ReturnCode::RC_NO_MEM);
         return nullptr;
     }
     std::memcpy(copy, data, dim * sizeof(double));
     IVector * result = (IVector *)new(std::nothrow) VectorImpl(dim, copy);
     if (!result) {
-        log(logger, ReturnCode::RC_NO_MEM);
+        _log(logger, ReturnCode::RC_NO_MEM);
         delete [] copy;
         return nullptr;
     }
@@ -73,16 +73,16 @@ IVector * IVector::createVector(size_t dim, double *data, ILogger *logger) {
 }
 
 IVector * IVector::add(const IVector *vec1, const IVector *vec2, ILogger *logger) {
-    auto rc_code = validateVectors(vec1, vec2);
-    if (rc_code != ReturnCode::RC_SUCCESS) {
-        log(logger, rc_code);
+    auto r_code = validateVectors(vec1, vec2);
+    if (r_code != ReturnCode::RC_SUCCESS) {
+        _log(logger, r_code);
         return nullptr;
     }
 
     size_t dim = vec1->getDim();
     auto * data = new(std::nothrow) double[dim];
     if (!data) {
-        log(logger, ReturnCode::RC_NO_MEM);
+        _log(logger, ReturnCode::RC_NO_MEM);
         return nullptr;
     }
     for (int i = 0; i < dim; ++i) {
@@ -90,7 +90,7 @@ IVector * IVector::add(const IVector *vec1, const IVector *vec2, ILogger *logger
     }
     IVector * res_vec = createVector(dim, data, logger);
     if (validateVector(res_vec) != ReturnCode::RC_SUCCESS) {
-        log(logger, validateVector(res_vec));
+        _log(logger, validateVector(res_vec));
         delete res_vec;
         delete [] data;
         return nullptr;
@@ -100,19 +100,19 @@ IVector * IVector::add(const IVector *vec1, const IVector *vec2, ILogger *logger
 }
 
 IVector * IVector::mul(const IVector *multiplier, double scale, ILogger *logger) {
-    auto rc_code = validateVector(multiplier);
-    if (rc_code != ReturnCode::RC_SUCCESS) {
-        log(logger, rc_code);
+    auto r_code = validateVector(multiplier);
+    if (r_code != ReturnCode::RC_SUCCESS) {
+        _log(logger, r_code);
         return nullptr;
     }
     if (std::isnan(scale) || std::isinf(scale)) {
-        log(logger, ReturnCode::RC_NAN);
+        _log(logger, ReturnCode::RC_NAN);
         return nullptr;
     }
     size_t dim = multiplier->getDim();
     auto * data = new(std::nothrow) double[dim];
     if (!data) {
-        log(logger, ReturnCode::RC_NO_MEM);
+        _log(logger, ReturnCode::RC_NO_MEM);
         return nullptr;
     }
     for (int i = 0; i < dim; ++i) {
@@ -120,7 +120,7 @@ IVector * IVector::mul(const IVector *multiplier, double scale, ILogger *logger)
     }
     IVector * res_vec = createVector(dim, data, logger);
     if (validateVector(res_vec) != ReturnCode::RC_SUCCESS){
-        log(logger, validateVector(res_vec));
+        _log(logger, validateVector(res_vec));
         delete res_vec;
         delete [] data;
         return nullptr;
@@ -137,7 +137,7 @@ IVector * IVector::sub(const IVector *minuend, const IVector *subtrahend, ILogge
     size_t dim = minuend->getDim();
     auto * data = new(std::nothrow) double[dim];
     if (!data) {
-        log(logger, ReturnCode::RC_NO_MEM);
+        _log(logger, ReturnCode::RC_NO_MEM);
         return nullptr;
     }
     for (int i = 0; i < dim; ++i) {
@@ -145,7 +145,7 @@ IVector * IVector::sub(const IVector *minuend, const IVector *subtrahend, ILogge
     }
     IVector * res_vec = createVector(dim, data, logger);
     if (validateVector(res_vec) != ReturnCode::RC_SUCCESS){
-        log(logger, validateVector(res_vec));
+        _log(logger, validateVector(res_vec));
         delete res_vec;
         delete [] data;
         return nullptr;
@@ -155,9 +155,9 @@ IVector * IVector::sub(const IVector *minuend, const IVector *subtrahend, ILogge
 }
 
 double IVector::mul(const IVector *multiplier1, const IVector *multiplier2, ILogger *logger) {
-    auto rc_code = validateVectors(multiplier1, multiplier2);
-    if (rc_code != ReturnCode::RC_SUCCESS) {
-        log(logger, rc_code);
+    auto r_code = validateVectors(multiplier1, multiplier2);
+    if (r_code != ReturnCode::RC_SUCCESS) {
+        _log(logger, r_code);
         return std::nan("1");
     }
     double res = 0;
@@ -170,23 +170,24 @@ double IVector::mul(const IVector *multiplier1, const IVector *multiplier2, ILog
 ReturnCode IVector::equals(const IVector *vec1, const IVector *vec2, Norm norm, double accuracy, bool &result, ILogger *logger) {
     auto r_code = validateVectors(vec1, vec2, accuracy);
     if (r_code != ReturnCode::RC_SUCCESS) {
-        log(logger, r_code);
+        _log(logger, r_code);
         result = false;
         return r_code;
     }
+    result = false;
 
-    auto diff = sub(vec1, vec2, logger);
-    if (!diff) {
-        result = false;
-        log(logger, ReturnCode::RC_NULL_PTR);
+    IVector * diff = sub(vec1, vec2, logger);
+    if (diff == nullptr)
         return ReturnCode::RC_NULL_PTR;
+
+    double normValue = std::fabs(diff->norm(norm));
+    if (std::isnan(normValue)) {
+        return ReturnCode::RC_NAN;
     }
-    auto norm_value = std::fabs(diff->norm(norm));
-    if (norm_value <= accuracy) {
+    if (normValue < accuracy) {
         result = true;
-    } else {
-        result = false;
     }
+
     delete diff;
     return ReturnCode::RC_SUCCESS;
 }

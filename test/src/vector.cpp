@@ -1,19 +1,5 @@
 #include "../include/test.h"
 
-bool equal(IVector * vec1, IVector * vec2) {
-    size_t dim1, dim2;
-    dim1 = vec1->getDim();
-    dim2 = vec2->getDim();
-    if (dim1!= dim2) {
-        return false;
-    }
-    for (int i = 0, j = 0; i < dim1, j < dim2 ; i++, j++) {
-        if (vec1->getCoord(i) != vec1->getCoord(j))
-            return false;
-    }
-    return true;
-}
-
 ReturnCode _add_test() {
     size_t dim = 4;
     double data1[4] =               { 1.5,    4.67,  2.754,  5.566 };
@@ -22,10 +8,11 @@ ReturnCode _add_test() {
     IVector * vec1 = IVector::createVector(dim, data1, nullptr);
     IVector * vec2 = IVector::createVector(dim, data2, nullptr);
     IVector * vec_res_add = IVector::createVector(dim, data_res_add, nullptr);
-
     IVector * result = IVector::add(vec1, vec2, nullptr);
 
-    if (equal(result, vec_res_add)) {
+    bool res_bool = true;
+    IVector::equals(result, vec_res_add, IVector::Norm::NORM_1, 0.0001, res_bool, nullptr);
+    if (!res_bool) {
         return ReturnCode::RC_SUCCESS;
     } else {
         return ReturnCode::RC_UNKNOWN;
@@ -41,10 +28,12 @@ ReturnCode _sub_test() {
     IVector * vec_res_sub = IVector::createVector(dim, data_res_sub, nullptr);
     IVector * result = IVector::sub(vec1, vec2, nullptr);
 
-    if (equal(result, vec_res_sub)) {
-        return ReturnCode::RC_SUCCESS;
-    } else {
+    bool res_bool = true;
+    IVector::equals(result, vec_res_sub, IVector::Norm::NORM_1, 0.0001, res_bool, nullptr);
+    if (!res_bool) {
         return ReturnCode::RC_UNKNOWN;
+    } else {
+        return ReturnCode::RC_SUCCESS;
     }
 }
 ReturnCode _mul_onScale_test() {
@@ -56,7 +45,9 @@ ReturnCode _mul_onScale_test() {
     IVector * vec_res_mul_scale = IVector::createVector(dim, data_res_mul_scale, nullptr);
     IVector * result = IVector::mul(vec1, scale, nullptr);
 
-    if (equal(result, vec_res_mul_scale)) {
+    bool res_bool = true;
+    IVector::equals(result, vec_res_mul_scale, IVector::Norm::NORM_1, 0.0001, res_bool, nullptr);
+    if (!res_bool) {
         return ReturnCode::RC_SUCCESS;
     } else {
         return ReturnCode::RC_UNKNOWN;

@@ -3,6 +3,10 @@
 
 #include "../../util/ReturnCode.h"
 #include "../../util/Export.h"
+#define _log(logger, rc_code)\
+if (logger != nullptr) {\
+    logger->log(__FUNCTION__, rc_code);\
+}
 
 class DECLSPEC ILogger {
 public:

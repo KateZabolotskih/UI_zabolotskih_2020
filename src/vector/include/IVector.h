@@ -4,7 +4,7 @@
 #include "../../logger/include/ILogger.h"
 #include "../../util/ReturnCode.h"
 #include "../../util/Export.h"
-#include <cstddef> // size_t
+#include <cstddef>
 
 class DECLSPEC IVector {
 public:
