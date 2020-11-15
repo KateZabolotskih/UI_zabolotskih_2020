@@ -1,19 +1,21 @@
 #ifndef ICOMPACT_H
 #define ICOMPACT_H
 
-#include <cstddef>
-#include <vector>
-#include "ILogger.h"
-#include "IVector.h"
-#include "ReturnCode.h"
-#include "Export.h"
+#include <cstddef> // size_t
+#include <vector>  // vector
+#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/ILogger.h"
+#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/IVector.h"
+#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/ReturnCode.h"
+#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/Export.h"
 
 class DECLSPEC ICompact {
 public:
     class Iterator {
     public:
         virtual IVector * getPoint() const = 0;
+        // change order of step
         virtual ReturnCode setDirection(std::vector<size_t> const & direction) = 0;
+        // adds step to current value in Iterator
         virtual ReturnCode doStep() = 0;
 
         Iterator() = default;

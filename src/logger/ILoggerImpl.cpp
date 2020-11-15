@@ -9,14 +9,16 @@ namespace {
 
     protected:
         static LoggerImpl * _instance;
-        FILE * _log_file;
-        set<void *> _clients;
+        FILE * _log_file{nullptr};
+        set<void *> _clients{nullptr};
     public:
         static ILogger * getLogger(void * client);
-        void log(const char *message, ReturnCode returnCode) override;
-        void releaseLogger(void *client) override;
-        ReturnCode setLogFile(const char *logFileName) override;
-        ~LoggerImpl() override;
+
+        void log(const char * message, ReturnCode returnCode)    override;
+        void releaseLogger(void * client)                        override;
+        ReturnCode setLogFile(const char * logFileName)          override;
+
+        ~LoggerImpl()                                           override;
     };
     LoggerImpl * LoggerImpl::_instance = nullptr;
 }
@@ -52,18 +54,18 @@ ILogger * LoggerImpl::getLogger(void *client) {
     return _instance;
 }
 
-void LoggerImpl::log(const char *message, ReturnCode returnCode) {
+void LoggerImpl::log(const char * message, ReturnCode returnCode) {
     if (!_instance) {
         return;
     }
     if (!message) {
-        fprintf(_log_file, "fun=%s code=%d message=NULL ", __FUNCTION__, returnCode);
+        fprintf(_log_file, "fun=%s code=%d message=NULL \n", __FUNCTION__, returnCode);
     }
-    fprintf(_log_file, "fun=%s code=%d message=%s ", __FUNCTION__, returnCode ,RC_messages[(size_t)returnCode]);
-
+    fprintf(_log_file, "fun=%s code=%d message=%s \n", __FUNCTION__, returnCode ,RC_messages[(size_t)returnCode]);
+    //fflush(_log_file);
 }
 
-void LoggerImpl::releaseLogger(void *client) {
+void LoggerImpl::releaseLogger(void * client) {
     if (!_instance) {
         return;
     }
@@ -79,16 +81,7 @@ void LoggerImpl::releaseLogger(void *client) {
     }
 }
 
-LoggerImpl::~LoggerImpl() {
-    if (!_instance) {
-        return;
-    }
-    fflush(_log_file);
-    if (_log_file != stdout)
-        fclose(_log_file);
-}
-
-ReturnCode LoggerImpl::setLogFile(const char *logFileName) {
+ReturnCode LoggerImpl::setLogFile(const char * logFileName) {
     if (!_instance) {
         return ReturnCode::RC_NULL_PTR;
     }
@@ -97,10 +90,19 @@ ReturnCode LoggerImpl::setLogFile(const char *logFileName) {
             return ReturnCode::RC_OPEN_FILE;
         }
     } else {
-        _instance->_log_file = fopen(logFileName, "a");
-        if (_instance->_log_file == NULL) {
+        _instance->_log_file = fopen(logFileName, "w");
+        if (_instance->_log_file == nullptr) {
             _instance->_log_file = stdout;
         }
     }
     return ReturnCode::RC_SUCCESS;
+}
+
+LoggerImpl::~LoggerImpl() {
+    if (!_instance) {
+        return;
+    }
+    fflush(_log_file);
+    if (_log_file != stdout)
+        fclose(_log_file);
 }

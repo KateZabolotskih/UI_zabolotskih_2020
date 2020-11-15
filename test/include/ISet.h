@@ -3,8 +3,8 @@
 
 #include "ILogger.h"
 #include "IVector.h"
-#include "ReturnCode.h"
-#include "Export.h"
+#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/ReturnCode.h"
+#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/Export.h"
 #include <cstddef>
 
 class DECLSPEC ISet {

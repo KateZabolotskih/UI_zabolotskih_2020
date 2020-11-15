@@ -2,62 +2,53 @@
 #include "include/IVector.h"
 
 namespace {
-    class VectorImpl : IVector {
+    class IVectorImpl : IVector {
         ILogger * _logger {nullptr};
         double * _data {nullptr};
         size_t _dim {0};
     public:
-        VectorImpl(size_t dim, double * data);
-        ~VectorImpl()                                         override;
-        IVector * clone()                               const override;
-        double norm(Norm norm)                          const override;
+        IVectorImpl(size_t dim, double * data);
+
         size_t getDim()                                 const override;
         double getCoord(size_t index)                   const override;
         ReturnCode setCoord(size_t index, double value) const override;
-        bool operator==(const IVector * vec);
+        double norm(Norm norm)                          const override;
+        IVector * clone()                               const override;
+
+        ~IVectorImpl()                                        override;
     };
 }
 
-VectorImpl::VectorImpl(size_t dim, double * data) : _dim(dim), _data(data) {
+IVectorImpl::IVectorImpl(size_t dim, double * data) : _dim(dim), _data(data) {
     _logger = ILogger::createLogger(this);
 }
 
-VectorImpl::~VectorImpl() {
-    if (_data != nullptr) {
-        delete[] _data;
-        _data = nullptr;
-    }
-    if(_logger != nullptr) {
-        _logger->releaseLogger(this);
-    }
-}
-
-size_t VectorImpl::getDim() const {
+size_t IVectorImpl::getDim() const {
     return _dim;
 }
 
-double VectorImpl::getCoord(size_t index) const {
+double IVectorImpl::getCoord(size_t index) const {
     if (index >= _dim || index < 0) {
-        _log(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
+        LOG(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
         return std::nan("1");
     }
     return _data[index];
 }
 
-ReturnCode VectorImpl::setCoord(size_t index, double value) const {
+ReturnCode IVectorImpl::setCoord(size_t index, double value) const {
     if (index >= _dim || index < 0) {
-        _log(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
+        LOG(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
         return ReturnCode::RC_INVALID_PARAMS;
     }
     if (std::isnan(value) || std::isinf(value)) {
-        _log(_logger, ReturnCode::RC_NAN);
+        LOG(_logger, ReturnCode::RC_NAN);
         return ReturnCode::RC_NAN;
     }
     _data[index] = value;
     return ReturnCode::RC_SUCCESS;
 }
 
-double VectorImpl::norm(Norm norm) const {
+double IVectorImpl::norm(Norm norm) const {
     double res = 0;
     switch (norm) {
         case Norm::NORM_1:
@@ -82,6 +73,16 @@ double VectorImpl::norm(Norm norm) const {
     return res;
 }
 
-IVector * VectorImpl::clone() const {
+IVector * IVectorImpl::clone() const {
     return createVector(_dim, _data, _logger);
+}
+
+IVectorImpl::~IVectorImpl() {
+    if (_data != nullptr) {
+        delete[] _data;
+        _data = nullptr;
+    }
+    if(_logger != nullptr) {
+        _logger->releaseLogger(this);
+    }
 }

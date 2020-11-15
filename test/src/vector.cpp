@@ -1,4 +1,4 @@
-#include "../include/test.h"
+#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/test.h"
 
 ReturnCode _add_test() {
     size_t dim = 4;
@@ -59,8 +59,8 @@ ReturnCode _mul_test() {
     double data2[4] =               { 3.6,    2.11,  5.443,  0.76  };
     double sum = 0;
 
-    for (int i = 0, j = 0; i < dim, j < dim; i++, j++) {
-        sum += data1[i] * data2[j];
+    for (int i = 0; i < dim; i++) {
+        sum += data1[i] * data2[i];
     }
 
     IVector * vec1 = IVector::createVector(dim, data1, nullptr);
@@ -78,24 +78,24 @@ void vector_testing_run() {
    int flag = 0;
    if (_add_test() != ReturnCode::RC_SUCCESS) {
        flag = 1;
-       std::cout << "vector addition testing failed" << std::endl;
+       std::cout << "vector addition testing failed" << std::endl << std::flush;
    }
    if (_sub_test() != ReturnCode::RC_SUCCESS) {
        flag = 1;
-       std::cout << "vector subtraction testing failed" << std::endl;
+       std::cout << "vector subtraction testing failed" << std::endl << std::flush;
    }
    if (_mul_onScale_test() != ReturnCode::RC_SUCCESS) {
        flag = 1;
-       std::cout << "vector multiplication on scale testing failed" << std::endl;
+       std::cout << "vector multiplication on scale testing failed" << std::endl << std::flush;
    }
    if (_mul_test() != ReturnCode::RC_SUCCESS) {
        flag = 1;
-       std::cout << "vector multiplication testing failed" << std::endl;
+       std::cout << "vector multiplication testing failed" << std::endl << std::flush;
    }
     if (flag == 0) {
-        std::cout << "IVector testing passed successfully" << std::endl;
+        std::cout << "IVector testing passed successfully" << std::endl << std::flush;
     } else {
-        std::cout << "IVector testing failed" << std::endl;
+        std::cout << "IVector testing failed" << std::endl << std::flush;
     }
 }
 
