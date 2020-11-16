@@ -1,6 +1,7 @@
-#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/test.h"
+#include "../include/test.h"
+#define FILE_NAME "Log_set.txt"
 
-void getParams(std::vector<IVector *> & vec_s, double & accuracy, IVector::Norm & norm) {
+void getParams(std::vector<IVector *> & vec_s, double & accuracy, IVector::Norm & norm, ILogger * logger) {
     accuracy = 1e-5;
     norm = IVector::Norm::NORM_1;
 
@@ -12,17 +13,17 @@ void getParams(std::vector<IVector *> & vec_s, double & accuracy, IVector::Norm 
     double data4[dim2] = {-2.1, 2.56, -2.689, 4.806, 0.111, 1.5};
     double data5[dim2] = { 1.1, 5.89,  2.689, 0.0,   0.431, 1.5};
 
-    IVector * vec1 = IVector::createVector(dim1, data1);
-    IVector * vec2 = IVector::createVector(dim1, data2);
-    IVector * vec3 = IVector::createVector(dim1, data3);
-    IVector * vec4 = IVector::createVector(dim2, data4);
-    IVector * vec5 = IVector::createVector(dim2, data5);
+    IVector * vec1 = IVector::createVector(dim1, data1, logger);
+    IVector * vec2 = IVector::createVector(dim1, data2, logger);
+    IVector * vec3 = IVector::createVector(dim1, data3, logger);
+    IVector * vec4 = IVector::createVector(dim2, data4, logger);
+    IVector * vec5 = IVector::createVector(dim2, data5, logger);
 
     std::vector<IVector *> vec = {vec1, vec2, vec3, vec4, vec5};
     vec_s = vec;
 }
 
-void getTwoSets(ISet * set_1, ISet * set_2, double & accuracy, IVector::Norm & norm) {
+void getTwoSets(ISet * set_1, ISet * set_2, double & accuracy, IVector::Norm & norm, ILogger * logger) {
     const size_t dim = 4;
     double data1_1[dim] = {1.5,   4.67,  2.754, 5.566};
     double data1_2[dim] = {7.12, -3.23,  1.11, -9.221};
@@ -33,13 +34,13 @@ void getTwoSets(ISet * set_1, ISet * set_2, double & accuracy, IVector::Norm & n
     double data2_3[dim] = {5.1,   6.78,  8.187, 6.326};
 
     std::vector<IVector *> vecs_1, vecs_2;
-    vecs_1.push_back(IVector::createVector(dim, data1_1));
-    vecs_1.push_back(IVector::createVector(dim, data1_2));
-    vecs_1.push_back(IVector::createVector(dim, data1_3));
+    vecs_1.push_back(IVector::createVector(dim, data1_1, logger));
+    vecs_1.push_back(IVector::createVector(dim, data1_2, logger));
+    vecs_1.push_back(IVector::createVector(dim, data1_3, logger));
 
-    vecs_2.push_back(IVector::createVector(dim, data2_1));
-    vecs_2.push_back(IVector::createVector(dim, data2_2));
-    vecs_2.push_back(IVector::createVector(dim, data2_3));
+    vecs_2.push_back(IVector::createVector(dim, data2_1, logger));
+    vecs_2.push_back(IVector::createVector(dim, data2_2, logger));
+    vecs_2.push_back(IVector::createVector(dim, data2_3, logger));
 
     for (auto vec : vecs_1) {
         set_1->insert(vec, norm, accuracy);
@@ -62,14 +63,14 @@ void clear_vecs(std::vector<IVector *> & vec_s) {
     }
 }
 
-ReturnCode _insert_test() {
+ReturnCode _insert_test(ILogger * logger) {
     std::vector<IVector *> vec_s;
     IVector::Norm norm;
     double accuracy;
 
-    getParams(vec_s, accuracy, norm);
+    getParams(vec_s, accuracy, norm, logger);
 
-    ISet * set = ISet::createSet();
+    ISet * set = ISet::createSet(logger);
 
     auto r_code = set->insert(vec_s[0], norm, accuracy);
     if (r_code != ReturnCode::RC_SUCCESS || set->getDim() != vec_s[0]->getDim()) {
@@ -98,13 +99,13 @@ ReturnCode _insert_test() {
     return ReturnCode::RC_SUCCESS;
 }
 
-ReturnCode _erase_byVec_test() {
+ReturnCode _erase_byVec_test(ILogger * logger) {
     std::vector<IVector *> vec_s;
     IVector::Norm norm;
     double accuracy;
 
-    getParams(vec_s, accuracy, norm);
-    ISet * set = ISet::createSet(nullptr);
+    getParams(vec_s, accuracy, norm, logger);
+    ISet * set = ISet::createSet(logger);
 
     set->insert(vec_s[3], norm, accuracy);
     set->insert(vec_s[4], norm, accuracy);
@@ -131,13 +132,13 @@ ReturnCode _erase_byVec_test() {
     return ReturnCode::RC_SUCCESS;
 }
 
-ReturnCode _erase_byInd_test() {
+ReturnCode _erase_byInd_test(ILogger * logger) {
     std::vector<IVector *> vec_s;
     IVector::Norm norm;
     double accuracy;
 
-    getParams(vec_s, accuracy, norm);
-    ISet * set = ISet::createSet(nullptr);
+    getParams(vec_s, accuracy, norm, logger);
+    ISet * set = ISet::createSet(logger);
 
     set->insert(vec_s[3], norm, accuracy);
     set->insert(vec_s[4], norm, accuracy);
@@ -174,13 +175,13 @@ ReturnCode _erase_byInd_test() {
     return ReturnCode::RC_SUCCESS;
 }
 
-ReturnCode _find_test() {
+ReturnCode _find_test(ILogger * logger) {
     std::vector<IVector *> vec_s;
     IVector::Norm norm;
     double accuracy;
 
-    getParams(vec_s, accuracy, norm);
-    ISet * set = ISet::createSet(nullptr);
+    getParams(vec_s, accuracy, norm, logger);
+    ISet * set = ISet::createSet(logger);
 
     set->insert(vec_s[3], norm, accuracy);
     set->insert(vec_s[4], norm, accuracy);
@@ -210,17 +211,17 @@ ReturnCode _find_test() {
     return ReturnCode::RC_SUCCESS;
 }
 
-ReturnCode _union_test() {
+ReturnCode _union_test(ILogger * logger) {
     std::vector<IVector *> vec_s;
     IVector::Norm norm;
     double accuracy;
 
-    getParams(vec_s, accuracy, norm);
+    getParams(vec_s, accuracy, norm, logger);
 
-    ISet * set_1 = ISet::createSet(nullptr);
-    ISet * set_2 = ISet::createSet(nullptr);
+    ISet * set_1 = ISet::createSet(logger);
+    ISet * set_2 = ISet::createSet(logger);
 
-    getTwoSets(set_1, set_2, accuracy, norm);
+    getTwoSets(set_1, set_2, accuracy, norm, logger);
 
     ISet * uni_set = ISet::_union(set_1, set_2, norm, accuracy);
     if (uni_set->getSize() != 5) {
@@ -243,21 +244,21 @@ ReturnCode _union_test() {
     return ReturnCode::RC_SUCCESS;
 }
 
-ReturnCode _diff_test() {
+ReturnCode _diff_test(ILogger * logger) {
     std::vector<IVector *> vec_s;
     IVector::Norm norm;
     double accuracy;
     size_t ind;
 
-    getParams(vec_s, accuracy, norm);
-    ISet * set_extra = ISet::createSet(nullptr);
+    getParams(vec_s, accuracy, norm, logger);
+    ISet * set_extra = ISet::createSet(logger);
     set_extra->insert(vec_s[3], norm, accuracy);
     set_extra->insert(vec_s[4], norm, accuracy);
 
-    ISet * set_1 = ISet::createSet(nullptr);
-    ISet * set_2 = ISet::createSet(nullptr);
+    ISet * set_1 = ISet::createSet(logger);
+    ISet * set_2 = ISet::createSet(logger);
 
-    getTwoSets(set_1, set_2, accuracy, norm);
+    getTwoSets(set_1, set_2, accuracy, norm, logger);
 
     ISet * diff_set = ISet::difference(set_1, set_2, norm, accuracy);
     if (diff_set->getSize() != 2) {
@@ -283,7 +284,7 @@ ReturnCode _diff_test() {
     return ReturnCode::RC_SUCCESS;
 }
 
-ReturnCode _intersection_test() {
+ReturnCode _intersection_test(ILogger * logger) {
     const size_t dim = 4;
     double data_1[dim] = {1.123, 5.443, 7.653, 1.99 };
     double data_2[dim] = {3.22,  2.432, 6.211, 9.34 };
@@ -295,15 +296,15 @@ ReturnCode _intersection_test() {
     double accuracy;
     size_t ind;
 
-    getParams(vec_s, accuracy, norm);
-    ISet * set_extra = ISet::createSet(nullptr);
+    getParams(vec_s, accuracy, norm, logger);
+    ISet * set_extra = ISet::createSet(logger);
     set_extra->insert(vec_s[3], norm, accuracy);
     set_extra->insert(vec_s[4], norm, accuracy);
 
-    ISet * set_1 = ISet::createSet(nullptr);
-    ISet * set_2 = ISet::createSet(nullptr);
+    ISet * set_1 = ISet::createSet(logger);
+    ISet * set_2 = ISet::createSet(logger);
 
-    getTwoSets(set_1, set_2, accuracy, norm);
+    getTwoSets(set_1, set_2, accuracy, norm, logger);
 
     ISet * inter_set = ISet::intersection(set_1, set_2, norm, accuracy);
     if (inter_set->getSize() != 1) {
@@ -335,7 +336,7 @@ ReturnCode _intersection_test() {
     return ReturnCode::RC_SUCCESS;
 }
 
-ReturnCode _symmDiff_test() {
+ReturnCode _symmDiff_test(ILogger * logger) {
     const size_t dim = 4;
     double data_1[dim] = {1.123, 5.443, 7.653, 1.99 };
     double data_2[dim] = {3.22,  2.432, 6.211, 9.34 };
@@ -347,15 +348,15 @@ ReturnCode _symmDiff_test() {
     double accuracy;
     size_t ind;
 
-    getParams(vec_s, accuracy, norm);
-    ISet * set_extra = ISet::createSet(nullptr);
+    getParams(vec_s, accuracy, norm, logger);
+    ISet * set_extra = ISet::createSet(logger);
     set_extra->insert(vec_s[3], norm, accuracy);
     set_extra->insert(vec_s[4], norm, accuracy);
 
-    ISet * set_1 = ISet::createSet(nullptr);
-    ISet * set_2 = ISet::createSet(nullptr);
+    ISet * set_1 = ISet::createSet(logger);
+    ISet * set_2 = ISet::createSet(logger);
 
-    getTwoSets(set_1, set_2, accuracy, norm);
+    getTwoSets(set_1, set_2, accuracy, norm, logger);
 
     ISet * summDiff_set = ISet::symmetricDifference(set_1, set_2, norm, accuracy);
     if (summDiff_set->getSize() != 4) {
@@ -386,7 +387,7 @@ ReturnCode _symmDiff_test() {
     return ReturnCode::RC_SUCCESS;
 }
 
-ReturnCode _clone_test() {
+ReturnCode _clone_test(ILogger * logger) {
     double accuracy = 1e-5;
     IVector::Norm norm = IVector::Norm::NORM_1;
     const size_t dim = 4;
@@ -394,10 +395,10 @@ ReturnCode _clone_test() {
     double data2[dim] = {7.12, -3.23,  1.11, -9.221};
     double data3[dim] = {5.1,   6.78,  8.187, 6.326};
     std::vector<IVector *> vecs;
-    vecs.push_back(IVector::createVector(dim, data1));
-    vecs.push_back(IVector::createVector(dim, data2));
-    vecs.push_back(IVector::createVector(dim, data3));
-    ISet * set_1 = ISet::createSet(nullptr);
+    vecs.push_back(IVector::createVector(dim, data1, logger));
+    vecs.push_back(IVector::createVector(dim, data2, logger));
+    vecs.push_back(IVector::createVector(dim, data3, logger));
+    ISet * set_1 = ISet::createSet(logger);
     for (auto vec : vecs) {
         set_1->insert(vec, norm, accuracy);
     }
@@ -420,41 +421,43 @@ ReturnCode _clone_test() {
 
 
 void set_testing_run() {
+    int client = 2;
+    ILogger * logger = ILogger::createLogger(&client);
+    logger->setLogFile(FILE_NAME);
     int flag = 0;
-
-    if (_insert_test() != ReturnCode::RC_SUCCESS) {
+    if (_insert_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set insertion test failed" << std::endl;
     }
-    if (_erase_byVec_test() != ReturnCode::RC_SUCCESS) {
+    if (_erase_byVec_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set erase vector test failed" << std::endl;
     }
-    if ( _erase_byInd_test() != ReturnCode::RC_SUCCESS) {
+    if ( _erase_byInd_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set erase vector by index test failed" << std::endl;
     }
-    if (_find_test() != ReturnCode::RC_SUCCESS) {
+    if (_find_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set find test failed" << std::endl;
     }
-    if (_union_test() != ReturnCode::RC_SUCCESS) {
+    if (_union_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set union test failed" << std::endl;
     }
-    if (_diff_test() != ReturnCode::RC_SUCCESS) {
+    if (_diff_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set difference test failed" << std::endl;
     }
-    if (_symmDiff_test() != ReturnCode::RC_SUCCESS) {
+    if (_symmDiff_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set symmetric difference test failed" << std::endl;
     }
-    if (_insert_test() != ReturnCode::RC_SUCCESS) {
+    if (_insert_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set symmetric difference test failed" << std::endl;
     }
-    if (_clone_test() != ReturnCode::RC_SUCCESS) {
+    if (_clone_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "set symmetric difference test failed" << std::endl;
     }
@@ -463,4 +466,5 @@ void set_testing_run() {
     } else {
         std::cout << "ISet testing failed" << std::endl;
     }
+    logger->releaseLogger(&client);
 }

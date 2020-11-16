@@ -1,15 +1,16 @@
-#include "../../../Downloads/UI_labs_2020_testing_prj-main/UI_labs_2020_testing_prj-main/headers/test.h"
+#include "../include/test.h"
+#define FILE_NAME "Log_compact.txt"
 
-ReturnCode compact_create_test() {
+ReturnCode compact_create_test(ILogger * logger) {
     ReturnCode r_code = ReturnCode::RC_SUCCESS;
     const double accuracy = 1e-5;
     const size_t dim2 = 2;
 
     double data1[dim2] = {0, 0};
     double data2[dim2] = {2, 2};
-    IVector * vec1 = IVector::createVector(dim2, data1);
-    IVector * vec2 = IVector::createVector(dim2, data2);
-    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy);
+    IVector * vec1 = IVector::createVector(dim2, data1, logger);
+    IVector * vec2 = IVector::createVector(dim2, data2, logger);
+    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy, logger);
     if (comp1 == nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     } else {
@@ -24,8 +25,8 @@ ReturnCode compact_create_test() {
     }
 
     double data3[dim2] = {0, 1};
-    IVector * vec3 = IVector::createVector(dim2, data3);
-    ICompact * comp2 = ICompact::createCompact(vec3, vec3, accuracy);
+    IVector * vec3 = IVector::createVector(dim2, data3, logger);
+    ICompact * comp2 = ICompact::createCompact(vec3, vec3, accuracy, logger);
     if (comp2 != nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     }
@@ -38,24 +39,24 @@ ReturnCode compact_create_test() {
     return r_code;
 }
 
-ReturnCode compact_contain_test() {
+ReturnCode compact_contain_test(ILogger * logger) {
     ReturnCode r_code = ReturnCode::RC_SUCCESS;
     const double accuracy = 1e-4;
     const size_t dim2 = 2;
 
     double data1[dim2] = {0, 0};
     double data2[dim2] = {5, 5};
-    IVector * vec1 = IVector::createVector(dim2, data1);
-    IVector * vec2 = IVector::createVector(dim2, data2);
+    IVector * vec1 = IVector::createVector(dim2, data1, logger);
+    IVector * vec2 = IVector::createVector(dim2, data2, logger);
 
-    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy);
+    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy, logger);
     if (comp1 == nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     } else {
         double a[dim2] = {2, 2};
         double b[dim2] = {3, 7};
-        IVector * A = IVector::createVector(dim2, a);
-        IVector * B = IVector::createVector(dim2, b);
+        IVector * A = IVector::createVector(dim2, a, logger);
+        IVector * B = IVector::createVector(dim2, b, logger);
         bool containsA = false;
         bool containsB = false;
         if (comp1->contains(A, containsA) != ReturnCode::RC_SUCCESS || !containsA ||
@@ -72,24 +73,24 @@ ReturnCode compact_contain_test() {
     return r_code;
 }
 
-ReturnCode compact_union_test() {
+ReturnCode compact_union_test(ILogger * logger) {
     ReturnCode r_code = ReturnCode::RC_SUCCESS;
     const double accuracy = 1e-4;
     const size_t dim2 = 2, dim3 = 3;
 
     double data1[dim2] = {1, 0};
     double data2[dim2] = {2, 2};
-    IVector * vec1 = IVector::createVector(dim2, data1);
-    IVector * vec2 = IVector::createVector(dim2, data2);
-    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy);
+    IVector * vec1 = IVector::createVector(dim2, data1, logger);
+    IVector * vec2 = IVector::createVector(dim2, data2, logger);
+    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy, logger);
 
     double data3[dim2] = {1, 2};
     double data4[dim2] = {2, 3};
-    IVector * vec3 = IVector::createVector(dim2, data3);
-    IVector * vec4 = IVector::createVector(dim2, data4);
-    ICompact * comp2 = ICompact::createCompact(vec3, vec4, accuracy);
+    IVector * vec3 = IVector::createVector(dim2, data3, logger);
+    IVector * vec4 = IVector::createVector(dim2, data4, logger);
+    ICompact * comp2 = ICompact::createCompact(vec3, vec4, accuracy, logger);
 
-    ICompact * _u = ICompact::_union(comp1, comp2, accuracy);
+    ICompact * _u = ICompact::_union(comp1, comp2, accuracy, logger);
     if ( _u == nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     } else {
@@ -105,28 +106,28 @@ ReturnCode compact_union_test() {
 
     double data_1[dim2] = {0, 0};
     double data_2[dim2] = {1, 2};
-    IVector * vec_1 = IVector::createVector(dim2, data_1);
-    IVector * vec_2 = IVector::createVector(dim2, data_2);
-    ICompact * comp_1 = ICompact::createCompact(vec_1, vec_2, accuracy);
+    IVector * vec_1 = IVector::createVector(dim2, data_1, logger);
+    IVector * vec_2 = IVector::createVector(dim2, data_2, logger);
+    ICompact * comp_1 = ICompact::createCompact(vec_1, vec_2, accuracy, logger);
 
     double data_3[dim2] = {1, 3};
     double data_4[dim2] = {3, 3};
-    IVector * vec_3 = IVector::createVector(dim2, data_3);
-    IVector * vec_4 = IVector::createVector(dim2, data_4);
-    ICompact * comp_2 = ICompact::createCompact(vec_3, vec_4, accuracy);
+    IVector * vec_3 = IVector::createVector(dim2, data_3, logger);
+    IVector * vec_4 = IVector::createVector(dim2, data_4, logger);
+    ICompact * comp_2 = ICompact::createCompact(vec_3, vec_4, accuracy, logger);
 
-    ICompact * _u_ = ICompact::_union(comp_1, comp_2, accuracy);
+    ICompact * _u_ = ICompact::_union(comp_1, comp_2, accuracy, logger);
     if ( _u_ != nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     }
 
     double data5[dim3] = {0, 0, 0};
     double data6[dim3] = {1, 1, 1};
-    IVector * vec5 = IVector::createVector(dim3, data5);
-    IVector * vec6 = IVector::createVector(dim3, data6);
-    ICompact * comp3 = ICompact::createCompact(vec5, vec6, accuracy);
+    IVector * vec5 = IVector::createVector(dim3, data5, logger);
+    IVector * vec6 = IVector::createVector(dim3, data6, logger);
+    ICompact * comp3 = ICompact::createCompact(vec5, vec6, accuracy, logger);
 
-    ICompact * _uF = ICompact::_union(comp1, comp3, accuracy);
+    ICompact * _uF = ICompact::_union(comp1, comp3, accuracy, logger);
     if (_uF != nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     }
@@ -152,24 +153,24 @@ ReturnCode compact_union_test() {
     return r_code;
 }
 
-ReturnCode compact_intersection_test() {
+ReturnCode compact_intersection_test(ILogger * logger) {
     ReturnCode r_code = ReturnCode::RC_SUCCESS;
     const double accuracy = 1e-4;
     const size_t dim2 = 2, dim3 = 3;
 
     double data1[dim2] = {0, 0};
     double data2[dim2] = {2, 2};
-    IVector * vec1 = IVector::createVector(dim2, data1);
-    IVector * vec2 = IVector::createVector(dim2, data2);
-    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy);
+    IVector * vec1 = IVector::createVector(dim2, data1, logger);
+    IVector * vec2 = IVector::createVector(dim2, data2, logger);
+    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy, logger);
 
     double data3[dim2] = {1, 1.5};
     double data4[dim2] = {3, 4};
-    IVector * vec3 = IVector::createVector(dim2, data3);
-    IVector * vec4 = IVector::createVector(dim2, data4);
-    ICompact * comp2 = ICompact::createCompact(vec3, vec4, accuracy);
+    IVector * vec3 = IVector::createVector(dim2, data3, logger);
+    IVector * vec4 = IVector::createVector(dim2, data4, logger);
+    ICompact * comp2 = ICompact::createCompact(vec3, vec4, accuracy, logger);
 
-    ICompact * inter = ICompact::intersection(comp1, comp2, accuracy);
+    ICompact * inter = ICompact::intersection(comp1, comp2, accuracy, logger);
     if ( inter == nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     } else {
@@ -185,11 +186,11 @@ ReturnCode compact_intersection_test() {
 
     double data5[dim3] = {0, 0, 0};
     double data6[dim3] = {1, 1, 1};
-    IVector * vec5 = IVector::createVector(dim3, data5);
-    IVector * vec6 = IVector::createVector(dim3, data6);
-    ICompact * comp3 = ICompact::createCompact(vec5, vec6, accuracy);
+    IVector * vec5 = IVector::createVector(dim3, data5, logger);
+    IVector * vec6 = IVector::createVector(dim3, data6, logger);
+    ICompact * comp3 = ICompact::createCompact(vec5, vec6, accuracy, logger);
 
-    ICompact * interF = ICompact::intersection(comp1, comp3, accuracy);
+    ICompact * interF = ICompact::intersection(comp1, comp3, accuracy, logger);
     if (interF != nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     }
@@ -206,24 +207,24 @@ ReturnCode compact_intersection_test() {
     return r_code;
 }
 
-ReturnCode compact_convex_test() {
+ReturnCode compact_convex_test(ILogger * logger) {
     ReturnCode r_code = ReturnCode::RC_SUCCESS;
     const double accuracy = 1e-4;
     const size_t dim2 = 2, dim3 = 3;
 
     double data1[dim2] = {0, 0};
     double data2[dim2] = {2, 2};
-    IVector * vec1 = IVector::createVector(dim2, data1);
-    IVector * vec2 = IVector::createVector(dim2, data2);
-    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy);
+    IVector * vec1 = IVector::createVector(dim2, data1, logger);
+    IVector * vec2 = IVector::createVector(dim2, data2, logger);
+    ICompact * comp1 = ICompact::createCompact(vec1, vec2, accuracy, logger);
 
     double data3[dim2] = {1, 1.5};
     double data4[dim2] = {3, 4};
-    IVector * vec3 = IVector::createVector(dim2, data3);
-    IVector * vec4 = IVector::createVector(dim2, data4);
-    ICompact * comp2 = ICompact::createCompact(vec3, vec4, accuracy);
+    IVector * vec3 = IVector::createVector(dim2, data3, logger);
+    IVector * vec4 = IVector::createVector(dim2, data4, logger);
+    ICompact * comp2 = ICompact::createCompact(vec3, vec4, accuracy, logger);
 
-    ICompact * conv = ICompact::convex(comp1, comp2, accuracy);
+    ICompact * conv = ICompact::convex(comp1, comp2, accuracy, logger);
     if (conv == nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     } else {
@@ -239,17 +240,17 @@ ReturnCode compact_convex_test() {
 
     double data5[dim2] = {1, 0};
     double data6[dim2] = {3, 3};
-    IVector * vec5 = IVector::createVector(dim2, data5);
-    IVector * vec6 = IVector::createVector(dim2, data6);
-    ICompact * comp3 = ICompact::createCompact(vec5, vec6, accuracy);
+    IVector * vec5 = IVector::createVector(dim2, data5, logger);
+    IVector * vec6 = IVector::createVector(dim2, data6, logger);
+    ICompact * comp3 = ICompact::createCompact(vec5, vec6, accuracy, logger);
 
     double data7[dim2] = {0.5, 0.5};
     double data8[dim2] = {2.5, 3};
-    IVector * vec7 = IVector::createVector(dim2, data7);
-    IVector * vec8 = IVector::createVector(dim2, data8);
-    ICompact * comp4 = ICompact::createCompact(vec7, vec8, accuracy);
+    IVector * vec7 = IVector::createVector(dim2, data7, logger);
+    IVector * vec8 = IVector::createVector(dim2, data8, logger);
+    ICompact * comp4 = ICompact::createCompact(vec7, vec8, accuracy, logger);
 
-    ICompact * conv2 = ICompact::convex(comp3, comp4, accuracy);
+    ICompact * conv2 = ICompact::convex(comp3, comp4, accuracy, logger);
     if (conv == nullptr) {
         r_code = ReturnCode::RC_UNKNOWN;
     } else {
@@ -281,25 +282,27 @@ ReturnCode compact_convex_test() {
 }
 
 void compact_testing_run() {
+    int client = 3;
+    ILogger * logger = ILogger::createLogger(&client);
+    logger->setLogFile(FILE_NAME);
     int flag = 0;
-
-    if (compact_union_test() != ReturnCode::RC_SUCCESS) {
+    if (compact_union_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "compact union test failed" << std::endl;
     }
-    if (compact_create_test() != ReturnCode::RC_SUCCESS) {
+    if (compact_create_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "compact creation test failed" << std::endl;
     }
-    if (compact_intersection_test() != ReturnCode::RC_SUCCESS) {
+    if (compact_intersection_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "compact intersection test failed" << std::endl;
     }
-    if (compact_contain_test() != ReturnCode::RC_SUCCESS) {
+    if (compact_contain_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "compact content test failed" << std::endl;
     }
-    if (compact_convex_test() != ReturnCode::RC_SUCCESS) {
+    if (compact_convex_test(logger) != ReturnCode::RC_SUCCESS) {
         flag = 1;
         std::cout << "compact convex test failed" << std::endl;
     }
@@ -308,4 +311,5 @@ void compact_testing_run() {
     } else {
         std::cout << "ICompact testing failed" << std::endl;
     }
+    logger->releaseLogger(&client);
 }
