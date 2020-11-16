@@ -3,7 +3,7 @@ add_library(vector SHARED
         IVector.cpp
         IVectorImpl.cpp)
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 # сообщаем какие includ'ы будут видны извне
 #target_include_directories(vector PUBLIC include)

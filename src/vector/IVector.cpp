@@ -20,7 +20,7 @@ static ReturnCode validateVectors(const IVector * vec1, const IVector * vec2, do
     if (std::isnan(accuracy)){
         return ReturnCode::RC_NAN;
     }
-    if (accuracy < 0) {
+    if (accuracy < 0.0) {
         return ReturnCode::RC_INVALID_PARAMS;
     }
     return ReturnCode::RC_SUCCESS;
@@ -43,7 +43,7 @@ static ReturnCode validateVector(const IVector * vec) {
 }
 
 IVector * IVector::createVector(size_t dim, double * data, ILogger * logger) {
-    if (!dim) {
+    if (dim == 0) {
         LOG(logger, ReturnCode::RC_ZERO_DIM);
         return nullptr;
     }
@@ -73,7 +73,7 @@ IVector * IVector::createVector(size_t dim, double * data, ILogger * logger) {
 }
 
 IVector * IVector::add(const IVector * vec1, const IVector * vec2, ILogger * logger) {
-    auto r_code = validateVectors(vec1, vec2);
+    ReturnCode r_code = validateVectors(vec1, vec2);
     if (r_code != ReturnCode::RC_SUCCESS) {
         LOG(logger, r_code);
         return nullptr;
@@ -102,6 +102,7 @@ IVector * IVector::add(const IVector * vec1, const IVector * vec2, ILogger * log
 IVector * IVector::sub(const IVector * minuend, const IVector * subtrahend, ILogger * logger) {
     auto r_code = validateVectors(minuend, subtrahend);
     if (r_code != ReturnCode::RC_SUCCESS) {
+        LOG(logger, r_code);
         return nullptr;
     }
     size_t dim = minuend->getDim();
@@ -155,7 +156,7 @@ IVector * IVector::mul(const IVector * multiplier, double scale, ILogger * logge
 }
 
 double IVector::mul(const IVector * multiplier1, const IVector * multiplier2, ILogger * logger) {
-    auto r_code = validateVectors(multiplier1, multiplier2);
+    ReturnCode r_code = validateVectors(multiplier1, multiplier2);
     if (r_code != ReturnCode::RC_SUCCESS) {
         LOG(logger, r_code);
         return std::nan("1");
@@ -168,7 +169,7 @@ double IVector::mul(const IVector * multiplier1, const IVector * multiplier2, IL
 }
 
 ReturnCode IVector::equals(const IVector * vec1, const IVector * vec2, Norm norm, double accuracy, bool & result, ILogger * logger) {
-    auto r_code = validateVectors(vec1, vec2, accuracy);
+    ReturnCode r_code = validateVectors(vec1, vec2, accuracy);
     if (r_code != ReturnCode::RC_SUCCESS) {
         LOG(logger, r_code);
         result = false;

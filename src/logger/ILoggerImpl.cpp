@@ -59,10 +59,9 @@ void LoggerImpl::log(const char * message, ReturnCode returnCode) {
         return;
     }
     if (!message) {
-        fprintf(_log_file, "fun=%s code=%d message=NULL \n", __FUNCTION__, returnCode);
+        fprintf(_log_file, "fun=%s code=%d message=NULL ", __FUNCTION__, returnCode);
     }
-    fprintf(_log_file, "fun=%s code=%d message=%s \n", __FUNCTION__, returnCode ,RC_messages[(size_t)returnCode]);
-    //fflush(_log_file);
+    fprintf(_log_file, "fun=%s code=%d message=%s ", __FUNCTION__, returnCode, message);
 }
 
 void LoggerImpl::releaseLogger(void * client) {

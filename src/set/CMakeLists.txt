@@ -1,11 +1,15 @@
 # сообщаем о динамической библиотеке и из каких файлов она будет собрана
 add_library(set SHARED
-        include/ISet.h
         ISet.cpp
         ISetImpl.cpp)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 # сообщаем какие includ'ы будут видны извне
-target_include_directories(set PUBLIC include)
+#target_include_directories(set PUBLIC include)
+
+set_target_properties(set PROPERTIES PREFIX "")
+set_target_properties(set PROPERTIES OUTPUT_NAME "set")
 
 # исполняемые файлы должны перекидываться в bin
 set_target_properties(set PROPERTIES

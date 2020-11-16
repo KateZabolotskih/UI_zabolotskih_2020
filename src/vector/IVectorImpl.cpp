@@ -5,7 +5,7 @@ namespace {
     class IVectorImpl : IVector {
         ILogger * _logger {nullptr};
         double * _data {nullptr};
-        size_t _dim {0};
+        size_t _dim;
     public:
         IVectorImpl(size_t dim, double * data);
 
