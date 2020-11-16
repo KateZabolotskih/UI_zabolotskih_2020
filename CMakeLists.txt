@@ -9,6 +9,8 @@ set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
 # тесты тут
 add_subdirectory(test)
+#add_subdirectory(mark_test)
+#add_subdirectory(petrunin_test)
 
 # исходный код тут
 add_subdirectory(src)
