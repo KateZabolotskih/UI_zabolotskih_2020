@@ -112,27 +112,30 @@ ReturnCode ICompactImpl::IteratorImpl::setDirection(std::vector<size_t> const & 
 ReturnCode ICompactImpl::IteratorImpl::doStep() {
     size_t cur_axis = 0;
     double new_value;
-    for (size_t i = 0; i < _begin->getDim();) {
-        size_t d = _direction[i];
+    for (cur_axis = 0; cur_axis < _begin->getDim();) {
+        size_t d = _direction[cur_axis];
         new_value = _cur_point->getCoord(d) + _orientation * _step->getCoord(d);
         if (_orientation == INVERSE && new_value < _begin->getCoord(d)) {
             _cur_point->setCoord(d, _end->getCoord(d));
-            i++;
+            cur_axis++;
         }
         else if (_orientation == EXPLICIT && new_value > _end->getCoord(d)) {
             _cur_point->setCoord(d, _begin->getCoord(d));
-            i++;
+            cur_axis++;
         }
         else {
             _cur_point->setCoord(d, new_value);
-            cur_axis = i;
             break;
         }
     }
 
+    if (cur_axis < _begin->getDim()) {
+        return ReturnCode::RC_SUCCESS;
+    }
     if (cur_axis >= _begin->getDim()) {
         LOG(_logger, ReturnCode::RC_OUT_OF_BOUNDS);
         delete _cur_point;
+        _cur_point = nullptr;
         if (_orientation == EXPLICIT) {
             _cur_point = _end->clone();
         } else {
