@@ -1,1 +1,0 @@
-fun=log code=9 message=createCompact fun=log code=2 message=_union fun=log code=4 message=checkComp fun=log code=4 message=checkComp fun=log code=4 message=_union fun=log code=9 message=createCompact fun=log code=4 message=intersection 
